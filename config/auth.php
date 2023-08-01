@@ -45,6 +45,11 @@ return [
       		'provider' => 'users',
 		  'hash' =>false
     	],
+        'deliver' => [
+            'driver' => 'jwt',
+            'provider' => 'delivers',
+            'hash' =>false
+        ],
 		
     ],
 
@@ -69,6 +74,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'delivers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Deliver::class,
         ],
 
         // 'users' => [
@@ -99,6 +109,7 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+     
     ],
 
     /*

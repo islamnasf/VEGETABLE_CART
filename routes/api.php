@@ -6,6 +6,7 @@ use App\Http\Controllers\api\categoryController;
 use App\Http\Controllers\api\commentController;
 use App\Http\Controllers\api\complaintController;
 use App\Http\Controllers\api\countryController;
+use App\Http\Controllers\api\Deliver\DeliveryController;
 use App\Http\Controllers\api\favoriteController;
 use App\Http\Controllers\api\orderController;
 use App\Http\Controllers\api\photoController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\api\productController;
 use App\Http\Controllers\api\questionController;
 use App\Http\Controllers\api\reviewController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DeliverController;
 use App\Http\Controllers\searchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +37,22 @@ Route::group(['middleware'=>'api','prefix'=>'auth'],function($router){
     Route::post('/logout',[AuthController::class,'logout']);
     Route::post('/verify',[AuthController::class,'verify']); 
 });
+//delivery
+Route::group(['prefix'=>'auth'],function($router){
+    Route::post('/register/delivery',[DeliverController::class,'register']);
+    Route::post('/login/delivery',[DeliverController::class,'login']);
+    Route::get('/profile/delivery',[DeliverController::class,'profile']);
+    Route::post('/logout/delivery',[DeliverController::class,'logout']);
+    Route::post('/verify/delivery',[DeliverController::class,'verify']);
+    //my-order
+    Route::get('/delivery',[DeliveryController::class,'index']);
+    Route::post('/delivery/{id}',[DeliveryController::class,'store']);
+    Route::post('/delivery/finish/{id}',[DeliveryController::class,'finish']);
+    Route::get('/currentOrder',[DeliveryController::class,'CurrentOrder']); //CurrentOrder
+    Route::get('/finishOrder',[DeliveryController::class,'finishOrder']);  //finishOrder
+
+});
+
 Route::group(['middleware'=>'auth:api'],function($router){
 //country
  Route::get('country',[countryController::class,'index']);

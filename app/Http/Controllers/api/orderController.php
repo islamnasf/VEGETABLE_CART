@@ -111,11 +111,8 @@ class orderController extends Controller
                 'status'=>200,
                 // 'Orders'=> $CurrentOrders->load('orders')
               'Order'=> orderResource::collection($CurrentOrders),
-
-
             ],200);
         }else{
-
             return response()->json([
                 'status'=>404,
                 'message'=> 'No Orders Found '

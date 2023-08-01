@@ -2,22 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\VerifyDeliverRequest;
 use App\Http\Requests\verifyRequest;
+use App\Models\Deliver;
 use Illuminate\Http\Request;
-use Auth;
 use Validator;
-use App\Models\User;
+use Auth;
 use Illuminate\Auth\Events\Verified;
 
-class AuthController extends Controller
+
+
+class DeliverController extends Controller
+
 {
     public function __construct(){
-        $this->middleware('auth:api',['except'=>['login','register']]);
+        $this->middleware('auth:deliver',['except'=>['login','register']]);
     }
     public function register(Request $request){
-        $validator=validator::make($request->all(),[
+        $validator=Validator::make($request->all(),[
             'name'=>'required',
-            'phone'=>'required|unique:users',
+            'email'=>'required',
+            'phone'=>'required|unique:delivers',
             'city'=>'required',
             'phone_code'=>'required',
             'password'=>'required|confirmed|min:6',
@@ -28,15 +33,15 @@ class AuthController extends Controller
         }
         $code_number=rand(100000,999999);
         $data = ['code_number' => $code_number];
-        $user=User::create(array_merge(
+        $deliver=Deliver::create(array_merge(
             $validator->validated() + $data,
             ['password'=>bcrypt($request->password)]
 
         ));
 
         return response()->json([
-            'message'=>'User successfully registered',
-            'user' =>$user
+            'message'=>'Deliver successfully registered',
+            'deliver' =>$deliver
         ],201);
     }
 
@@ -49,7 +54,7 @@ class AuthController extends Controller
         if($validator->fails()){
             return response()->json($validator->errors(),422);
         }
-        if(!$token=auth()->attempt($validator->validated())){
+        if(!$token=auth()->guard('deliver')->attempt($validator->validated())){
             return response()->json(['error'=>'Unauthorized'],401);
         }
         return $this->createNewToken($token);
@@ -58,25 +63,25 @@ class AuthController extends Controller
         return response()->json([
             'access_token'=>$token,
             'token_tybe'=>'bearer',
-            'expires_in'=>auth()->factory()->getTTl()*60,
-            'user'=>auth()->user()
-
+            'expires_in'=>auth()->guard('deliver')->factory()->getTTl()*60,
+           'deliver'=>auth()->guard('deliver')->user()
 
         ]); 
     }
     public function profile(){
-        return response()->json(auth()->user());
+       return response()->json(auth()->guard('deliver')->user());
     }
     public function logout(){
-        auth()->logout();
+        auth()->guard('deliver')->logout();
         
         return response()->json([
-            'message'=>'User logged out',
+            'message'=>'Deliver logged out',
         ],201);
     }
-    public function verify(verifyRequest $Request){
+    
+    public function verify(VerifyDeliverRequest $Request){
         $otp=$Request->validated();
-        $data=User::where('code_number',$otp);
+        $data=Deliver::where('code_number',$otp);
         if($data->exists()){
             $data->update(['verify'=>'Verified']);
             return response()->json([

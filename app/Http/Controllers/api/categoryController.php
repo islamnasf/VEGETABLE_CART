@@ -51,7 +51,7 @@ class categoryController extends Controller
 
         }
     }
-    public function show($cat){ 
+    public function show( $cat){ 
         $category = category::find($cat);
         if($category){
             return response()->json([

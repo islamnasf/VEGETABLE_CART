@@ -16,6 +16,9 @@ class AllOrder extends Model
     public function orders(){
         return $this->hasMany('App\Models\Order','allOrder_id');
     }
+    public function my_orders(){
+        return $this->hasOne('App\Models\MyOrder','allOrder_id','id');
+    }
    
     protected $fillable=['id','user_id','user_name','user_phone','user_address','status',
     'notes','code','payment_method','total_price','day','houre'];
