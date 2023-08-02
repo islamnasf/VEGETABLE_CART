@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Deliver;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MyOrderResource;
 use App\Http\Resources\orderResource;
 use App\Models\AllOrder;
 use App\Models\MyOrder;
@@ -28,7 +29,6 @@ class DeliveryController extends Controller
             ],404);
         }
     }
-
 //Add to my order 
     public function store($order){  
         $delivery_id=Auth()->guard('deliver')->user()->id;
@@ -58,8 +58,7 @@ class DeliveryController extends Controller
             ],500);
         }
     }
-
-    //start delivering
+//start delivering
  public function startDeliverig($order){
     $delivery_id=Auth()->guard('deliver')->user()->id;
     $myorder=MyOrder::Select("*")
@@ -89,8 +88,7 @@ class DeliveryController extends Controller
         ],500);
     }
 }
-
-        //finish order
+//finish order
         public function finish(Request $Request ,$order){
             $delivery_id=Auth()->guard('deliver')->user()->id;
             $myorder=MyOrder::Select("*")
@@ -129,7 +127,7 @@ class DeliveryController extends Controller
                 ],500);
             }
         }
-    //All my current orders
+//All my current orders
     public function currentOrder(){
         $delivery_id=Auth()->guard('deliver')->user()->id;
         $CurrentOrders=MyOrder::Select("*")
@@ -142,8 +140,8 @@ class DeliveryController extends Controller
         if($CurrentOrders ->count() > 0){
             return response()->json([
                 'status'=>200,
-             'MyOrder'=> $CurrentOrders->load('all_orders')
-              //'MyOrder'=> orderResource::collection($CurrentOrders),
+             //'MyOrder'=> $CurrentOrders->load('all_orders'),
+              'MyOrder'=> MyOrderResource::collection($CurrentOrders),
             ],200);
         }else{
             return response()->json([
@@ -152,8 +150,7 @@ class DeliveryController extends Controller
             ],404);
         }
     }
-    //All my finish orders
-    
+//All my finish orders 
     public function finishOrder(){
         $delivery_id=Auth()->guard('deliver')->user()->id;
         $finishOrders=MyOrder::Select("*")
@@ -165,8 +162,9 @@ class DeliveryController extends Controller
         if($finishOrders ->count() > 0){
             return response()->json([
                 'status'=>200,
-             'MyOrder'=> $finishOrders->load('all_orders')
-              //'MyOrder'=> orderResource::collection($finishOrders),
+             //'MyOrder'=> $finishOrders->load('all_orders')
+             'MyOrder'=> MyOrderResource::collection($finishOrders),
+
             ],200);
         }else{
             return response()->json([

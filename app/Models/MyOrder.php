@@ -14,7 +14,7 @@ class MyOrder extends Model
         return $this->belongsTo('App\Models\Deliver','delivery_id','id');
     }
     public function all_orders(){
-        return $this->belongsTo('App\Models\Order','allOrder_id','id');
+        return $this->belongsTo('App\Models\AllOrder','allOrder_id','id');
     }
    
     protected $fillable=['id','allOrder_id','delivery_id','paid','money','status'];
