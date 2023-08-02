@@ -59,6 +59,37 @@ class DeliveryController extends Controller
         }
     }
 
+    //start delivering
+ public function startDeliverig($order){
+    $delivery_id=Auth()->guard('deliver')->user()->id;
+    $myorder=MyOrder::Select("*")
+    ->orderby("id","ASC")
+    ->where('id','=',$order)
+    ->where('delivery_id','=',$delivery_id)
+    ->where('status','=','Preparing')
+    ->first(); 
+    if( $myorder){
+    $allorder=AllOrder::select("*")
+    ->where('id','=',$myorder->allOrder_id)
+    ->first();
+        $myorder->update([
+            'status'=>'Prepared',
+        ]);
+        if($myorder){
+            $allorder->update(['status'=>'in delivery ']);
+        }
+        return response()->json([
+            'stetus'=>200,
+            'message'=>"this order is in delivery"
+        ],200); 
+    }else{
+        return response()->json([
+            'stetus'=>500,
+            'message'=>"something went woring"
+        ],500);
+    }
+}
+
         //finish order
         public function finish(Request $Request ,$order){
             $delivery_id=Auth()->guard('deliver')->user()->id;
@@ -66,8 +97,7 @@ class DeliveryController extends Controller
             ->orderby("id","ASC")
             ->where('id','=',$order)
             ->where('delivery_id','=',$delivery_id)
-            ->where('status','=','Preparing')
-            ->orwhere('status','=','Prepared')
+            ->where('status','=','Prepared')
             ->first(); 
             if( $myorder){
             $allorder=AllOrder::select("*")
@@ -145,9 +175,6 @@ class DeliveryController extends Controller
             ],404);
         }
     }
-  
-
-
     }
 
 

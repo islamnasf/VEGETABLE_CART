@@ -47,7 +47,8 @@ Route::group(['prefix'=>'auth'],function($router){
     //my-order
     Route::get('/delivery',[DeliveryController::class,'index']);
     Route::post('/delivery/{id}',[DeliveryController::class,'store']);
-    Route::post('/delivery/finish/{id}',[DeliveryController::class,'finish']);
+    Route::post('/delivery/start/{id}',[DeliveryController::class,'startDeliverig']);  //start delivering
+    Route::post('/delivery/finish/{id}',[DeliveryController::class,'finish']); //end delivering
     Route::get('/currentOrder',[DeliveryController::class,'CurrentOrder']); //CurrentOrder
     Route::get('/finishOrder',[DeliveryController::class,'finishOrder']);  //finishOrder
 
